@@ -27,7 +27,7 @@ This backend is configured for Render with `render.yaml`.
    - `S3_BUCKET`: use your real bucket value, or `local` while testing
    - `S3_REGION`: use your real region value, or `local` while testing
    - `SMS_API_KEY`: use your real key, or `local` while testing
-5. The deploy runs `npm ci && npm run build`, then starts with `npm run prisma:deploy && npm run start:prod`.
+5. The deploy runs `npm ci --include=dev && npm run build`, then starts with `npm run prisma:deploy && npm run start:prod`.
 
 If the Next.js frontend is deployed separately, set its `BACKEND_URL` environment variable to the Render backend URL, for example `https://acrex-backend.onrender.com`.
 
