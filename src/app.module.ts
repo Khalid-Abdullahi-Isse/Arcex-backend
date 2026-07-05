@@ -13,6 +13,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -45,5 +46,6 @@ import { UploadsModule } from './uploads/uploads.module';
       useClass: JwtAuthGuard,
     },
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

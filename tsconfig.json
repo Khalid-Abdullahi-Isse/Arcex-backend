@@ -17,5 +17,5 @@
     "skipLibCheck": true,
     "strictPropertyInitialization": false
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts", "api/**/*.ts"]
+  "include": ["src/**/*.ts", "prisma/**/*.ts"]
 }

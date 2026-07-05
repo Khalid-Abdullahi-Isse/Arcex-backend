@@ -22,6 +22,7 @@ const notifications_module_1 = require("./notifications/notifications.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const users_module_1 = require("./users/users.module");
 const uploads_module_1 = require("./uploads/uploads.module");
+const health_controller_1 = require("./health.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -57,6 +58,7 @@ exports.AppModule = AppModule = __decorate([
                 useClass: jwt_auth_guard_1.JwtAuthGuard,
             },
         ],
+        controllers: [health_controller_1.HealthController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
