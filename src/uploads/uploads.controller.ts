@@ -10,7 +10,7 @@ import {
 import { createReadStream, existsSync } from 'fs';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname, join, normalize } from 'path';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { Public } from '../auth/decorators/public.decorator';
 import { decodeLocalUploadToken } from './local-upload-url';
 
@@ -23,21 +23,11 @@ export class UploadsController {
   @Put(':token')
   async upload(@Param('token') token: string, @Req() request: Request, @Res() response: Response) {
     const key = this.decodeSafeKey(token);
-    const chunks: Buffer[] = [];
-    let totalBytes = 0;
-
-    for await (const chunk of request) {
-      const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-      totalBytes += buffer.length;
-      if (totalBytes > MAX_UPLOAD_BYTES) {
-        throw new BadRequestException('File exceeds the 10MB upload limit');
-      }
-      chunks.push(buffer);
-    }
+    const body = await this.readRequestBody(request);
 
     const filePath = this.resolveUploadPath(key);
     await mkdir(dirname(filePath), { recursive: true });
-    await writeFile(filePath, Buffer.concat(chunks));
+    await writeFile(filePath, body);
 
     response.status(204).send();
   }
@@ -70,5 +60,27 @@ export class UploadsController {
       throw new BadRequestException('Invalid upload path');
     }
     return filePath;
+  }
+
+  private readRequestBody(request: Request) {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      let totalBytes = 0;
+
+      request.on('data', (chunk: Buffer | string) => {
+        const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        totalBytes += buffer.length;
+
+        if (totalBytes > MAX_UPLOAD_BYTES) {
+          reject(new BadRequestException('File exceeds the 10MB upload limit'));
+          request.destroy();
+          return;
+        }
+
+        chunks.push(buffer);
+      });
+      request.on('end', () => resolve(Buffer.concat(chunks)));
+      request.on('error', reject);
+    });
   }
 }
