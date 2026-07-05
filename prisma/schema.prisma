@@ -1,0 +1,95 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ListingStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  SOLD
+}
+
+enum ListingDocumentType {
+  TITLE_DEED
+  ID_CARD
+  SURVEY_MAP
+  OTHER
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  phone           String    @unique
+  email           String    @unique
+  passwordHash    String
+  name            String
+  role            UserRole  @default(USER)
+  region          String?
+  isPhoneVerified Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  listings        Listing[] @relation("SellerListings")
+}
+
+model Listing {
+  id            String        @id @default(uuid()) @db.Uuid
+  sellerId      String        @db.Uuid
+  title         String
+  description   String
+  region        String
+  district      String?
+  sizeSqm       Float
+  price         Decimal       @db.Decimal(14, 2)
+  currency      String        @default("USD")
+  latitude      Float?
+  longitude     Float?
+  status        ListingStatus @default(PENDING_REVIEW)
+  rejectionNote String?
+  createdAt     DateTime      @default(now())
+
+  seller        User              @relation("SellerListings", fields: [sellerId], references: [id], onDelete: Cascade)
+  images        ListingImage[]
+  documents     ListingDocument[]
+
+  @@index([region])
+  @@index([status])
+  @@index([price])
+  @@index([sizeSqm])
+}
+
+model ListingImage {
+  id        String  @id @default(uuid()) @db.Uuid
+  listingId String  @db.Uuid
+  url       String
+  order     Int
+
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, order])
+  @@index([listingId])
+}
+
+model ListingDocument {
+  id         String              @id @default(uuid()) @db.Uuid
+  listingId  String              @db.Uuid
+  type       ListingDocumentType
+  fileUrl    String
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  listing    Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId])
+  @@index([type])
+}
