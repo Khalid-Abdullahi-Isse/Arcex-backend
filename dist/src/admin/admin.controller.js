@@ -15,11 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminController = void 0;
 const common_1 = require("@nestjs/common");
 const admin_guard_1 = require("../auth/guards/admin.guard");
+const mark_listing_sold_dto_1 = require("../listings/dto/mark-listing-sold.dto");
+const listings_service_1 = require("../listings/listings.service");
 const review_listing_dto_1 = require("./dto/review-listing.dto");
 const admin_service_1 = require("./admin.service");
 let AdminController = class AdminController {
-    constructor(adminService) {
+    constructor(adminService, listingsService) {
         this.adminService = adminService;
+        this.listingsService = listingsService;
     }
     pendingListings() {
         return this.adminService.pendingListings();
@@ -29,6 +32,9 @@ let AdminController = class AdminController {
     }
     rejectListing(id, dto) {
         return this.adminService.rejectListing(id, dto);
+    }
+    markListingSold(id, dto) {
+        return this.listingsService.markSoldByAdmin(id, dto);
     }
     pendingDocuments() {
         return this.adminService.pendingDocuments();
@@ -57,6 +63,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AdminController.prototype, "rejectListing", null);
 __decorate([
+    (0, common_1.Patch)('listings/:id/sold'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, mark_listing_sold_dto_1.MarkListingSoldDto]),
+    __metadata("design:returntype", void 0)
+], AdminController.prototype, "markListingSold", null);
+__decorate([
     (0, common_1.Get)('documents/pending'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -65,6 +79,7 @@ __decorate([
 exports.AdminController = AdminController = __decorate([
     (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Controller)('admin'),
-    __metadata("design:paramtypes", [admin_service_1.AdminService])
+    __metadata("design:paramtypes", [admin_service_1.AdminService,
+        listings_service_1.ListingsService])
 ], AdminController);
 //# sourceMappingURL=admin.controller.js.map

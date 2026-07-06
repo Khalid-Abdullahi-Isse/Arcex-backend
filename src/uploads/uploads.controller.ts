@@ -12,9 +12,13 @@ import { mkdir, writeFile } from 'fs/promises';
 import { dirname, join, normalize } from 'path';
 import type { Request, Response } from 'express';
 import { Public } from '../auth/decorators/public.decorator';
-import { decodeLocalUploadToken } from './local-upload-url';
+import {
+  decodeLocalUploadToken,
+  isAllowedLocalObjectKey,
+  resolveLocalObjectPath,
+  UPLOAD_ROOT,
+} from './local-upload-url';
 
-const UPLOAD_ROOT = join(process.cwd(), 'uploads');
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 @Controller('uploads/local')
@@ -48,18 +52,18 @@ export class UploadsController {
 
   private decodeSafeKey(token: string) {
     const key = decodeLocalUploadToken(token);
-    if (!key.startsWith('listings/') || key.includes('..')) {
+    if (!isAllowedLocalObjectKey(key)) {
       throw new BadRequestException('Invalid upload token');
     }
     return key;
   }
 
   private resolveUploadPath(key: string) {
-    const filePath = normalize(join(UPLOAD_ROOT, key));
-    if (!filePath.startsWith(UPLOAD_ROOT)) {
+    try {
+      return resolveLocalObjectPath(key);
+    } catch {
       throw new BadRequestException('Invalid upload path');
     }
-    return filePath;
   }
 
   private readRequestBody(request: Request) {

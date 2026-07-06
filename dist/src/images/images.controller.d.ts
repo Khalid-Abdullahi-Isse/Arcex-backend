@@ -21,9 +21,9 @@ export declare class ImagesController {
         };
     }, listingId: string, dto: AddListingImageDto): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }>;
     reorder(request: {
         user: {
@@ -31,9 +31,9 @@ export declare class ImagesController {
         };
     }, listingId: string, dto: ReorderImagesDto): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }[]>;
     remove(request: {
         user: {
@@ -41,8 +41,8 @@ export declare class ImagesController {
         };
     }, listingId: string, imageId: string): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }>;
 }

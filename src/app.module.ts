@@ -3,6 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AdminModule } from './admin/admin.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { validateEnv } from './config/env.validation';
@@ -10,7 +11,9 @@ import { DocumentsModule } from './documents/documents.module';
 import { ImagesModule } from './images/images.module';
 import { ListingsModule } from './listings/listings.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PdfModule } from './pdf/pdf.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { SaleRecordsModule } from './sale-records/sale-records.module';
 import { UsersModule } from './users/users.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { HealthController } from './health.controller';
@@ -37,7 +40,10 @@ import { HealthController } from './health.controller';
     ImagesModule,
     DocumentsModule,
     UploadsModule,
+    PdfModule,
+    SaleRecordsModule,
     AdminModule,
+    AnalyticsModule,
     NotificationsModule,
   ],
   providers: [

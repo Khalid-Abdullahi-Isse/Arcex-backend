@@ -13,21 +13,21 @@ export declare class ImagesService {
     }>;
     addImage(userId: string, listingId: string, dto: AddListingImageDto): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }>;
     reorder(userId: string, listingId: string, dto: ReorderImagesDto): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }[]>;
     remove(userId: string, listingId: string, imageId: string): Promise<{
         id: string;
-        order: number;
         listingId: string;
         url: string;
+        order: number;
     }>;
     private assertSellerOwnsListing;
 }

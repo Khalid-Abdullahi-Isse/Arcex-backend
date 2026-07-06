@@ -8,30 +8,30 @@ export declare class UsersController {
             sub: string;
         };
     }): Promise<{
+        name: string;
         id: string;
         region: string | null;
         createdAt: Date;
         phone: string;
         email: string;
-        name: string;
-        role: import("@prisma/client").$Enums.UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isPhoneVerified: boolean;
     }>;
     myListings(request: {
         user: {
             sub: string;
         };
-    }): import("@prisma/client").Prisma.PrismaPromise<({
+    }): import(".prisma/client").Prisma.PrismaPromise<({
         images: {
             id: string;
-            order: number;
             listingId: string;
             url: string;
+            order: number;
         }[];
         documents: {
             id: string;
             listingId: string;
-            type: import("@prisma/client").$Enums.ListingDocumentType;
+            type: import(".prisma/client").$Enums.ListingDocumentType;
             fileUrl: string;
             reviewedAt: Date | null;
             reviewedBy: string | null;
@@ -48,7 +48,7 @@ export declare class UsersController {
         currency: string;
         latitude: number | null;
         longitude: number | null;
-        status: import("@prisma/client").$Enums.ListingStatus;
+        status: import(".prisma/client").$Enums.ListingStatus;
         rejectionNote: string | null;
         createdAt: Date;
     })[]>;
@@ -56,14 +56,14 @@ export declare class UsersController {
         user: {
             sub: string;
         };
-    }, dto: UpdateUserDto): import("@prisma/client").Prisma.Prisma__UserClient<{
+    }, dto: UpdateUserDto): import(".prisma/client").Prisma.Prisma__UserClient<{
+        name: string;
         id: string;
         region: string | null;
         createdAt: Date;
         phone: string;
         email: string;
-        name: string;
-        role: import("@prisma/client").$Enums.UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isPhoneVerified: boolean;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

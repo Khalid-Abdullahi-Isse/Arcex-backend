@@ -16,6 +16,7 @@ exports.ListingsController = void 0;
 const common_1 = require("@nestjs/common");
 const public_decorator_1 = require("../auth/decorators/public.decorator");
 const create_listing_dto_1 = require("./dto/create-listing.dto");
+const mark_listing_sold_dto_1 = require("./dto/mark-listing-sold.dto");
 const search_listings_dto_1 = require("./dto/search-listings.dto");
 const update_listing_dto_1 = require("./dto/update-listing.dto");
 const listings_service_1 = require("./listings.service");
@@ -32,11 +33,18 @@ let ListingsController = class ListingsController {
     findOne(id) {
         return this.listingsService.findOne(id);
     }
+    async infoSheet(id, response) {
+        const { buffer, filename } = await this.listingsService.generateInfoSheet(id);
+        response.setHeader('Content-Type', 'application/pdf');
+        response.setHeader('Content-Length', buffer.length);
+        response.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        response.send(buffer);
+    }
     update(request, id, dto) {
         return this.listingsService.update(request.user.sub, id, dto);
     }
-    markSold(request, id) {
-        return this.listingsService.markSold(request.user.sub, id);
+    markSold(request, id, dto) {
+        return this.listingsService.markSold(request.user.sub, id, dto);
     }
     remove(request, id) {
         return this.listingsService.remove(request.user.sub, id);
@@ -68,6 +76,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ListingsController.prototype, "findOne", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)(':id/info-sheet'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ListingsController.prototype, "infoSheet", null);
+__decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('id')),
@@ -80,8 +97,9 @@ __decorate([
     (0, common_1.Patch)(':id/sold'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, mark_listing_sold_dto_1.MarkListingSoldDto]),
     __metadata("design:returntype", void 0)
 ], ListingsController.prototype, "markSold", null);
 __decorate([

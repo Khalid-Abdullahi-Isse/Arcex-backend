@@ -4,36 +4,36 @@ export declare class UsersService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findById(id: string): Promise<{
+        name: string;
         id: string;
         region: string | null;
         createdAt: Date;
         phone: string;
         email: string;
-        name: string;
-        role: import("@prisma/client").$Enums.UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isPhoneVerified: boolean;
     }>;
-    update(id: string, dto: UpdateUserDto): import("@prisma/client").Prisma.Prisma__UserClient<{
+    update(id: string, dto: UpdateUserDto): import(".prisma/client").Prisma.Prisma__UserClient<{
+        name: string;
         id: string;
         region: string | null;
         createdAt: Date;
         phone: string;
         email: string;
-        name: string;
-        role: import("@prisma/client").$Enums.UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isPhoneVerified: boolean;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    myListings(id: string): import("@prisma/client").Prisma.PrismaPromise<({
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    myListings(id: string): import(".prisma/client").Prisma.PrismaPromise<({
         images: {
             id: string;
-            order: number;
             listingId: string;
             url: string;
+            order: number;
         }[];
         documents: {
             id: string;
             listingId: string;
-            type: import("@prisma/client").$Enums.ListingDocumentType;
+            type: import(".prisma/client").$Enums.ListingDocumentType;
             fileUrl: string;
             reviewedAt: Date | null;
             reviewedBy: string | null;
@@ -50,7 +50,7 @@ export declare class UsersService {
         currency: string;
         latitude: number | null;
         longitude: number | null;
-        status: import("@prisma/client").$Enums.ListingStatus;
+        status: import(".prisma/client").$Enums.ListingStatus;
         rejectionNote: string | null;
         createdAt: Date;
     })[]>;

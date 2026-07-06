@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const bcrypt = require("bcryptjs");
 const prisma = new client_1.PrismaClient();
-const APP_TABLES = ['ListingDocument', 'ListingImage', 'Listing', 'User'];
+const APP_TABLES = ['sale_records', 'ListingDocument', 'ListingImage', 'Listing', 'User'];
 const UNSPLASH_PHOTO_IDS = [
     'photo-1500382017468-9049fed747ef',
     'photo-1501785888041-af3ef285b470',
@@ -143,17 +143,17 @@ const listingSeeds = [
     l('Merca palm-lined residential land', 'Palm-lined parcel between town and the beach with enough room for a home and rental annex. The seller has survey points marked on site.', 'Shabeellaha Hoose', 'Merca - Beach Road', 875, '29400.00', 'ibrahim', 1.709, 44.7784, 56, 4),
     l('Garoowe commercial corner near bus station', 'Corner plot near transport activity in Garoowe with space for small shops and upstairs rooms. Strong visibility from two streets.', 'Nugaal', 'Garoowe Bus Station', 585, '44750.00', 'layla', 8.4097, 48.4886, 58, 4),
 ].map((seed, index) => {
-    if (index < 42)
+    if (index < 34)
         return { ...seed, status: client_1.ListingStatus.APPROVED };
-    if (index < 47)
+    if (index < 39)
         return { ...seed, status: client_1.ListingStatus.PENDING_REVIEW };
-    if (index < 50) {
+    if (index < 42) {
         const notes = [
             'The uploaded title deed is illegible. Please re-upload a clear scan of the original document and resubmit.',
             'The name on the ID card does not match the title deed. Please provide proof of ownership transfer or power of attorney.',
             'The described boundaries do not match the survey sketch. Please attach an updated survey map before resubmitting.',
         ];
-        return { ...seed, status: client_1.ListingStatus.REJECTED, rejectionNote: notes[index - 47] };
+        return { ...seed, status: client_1.ListingStatus.REJECTED, rejectionNote: notes[index - 39] };
     }
     return { ...seed, status: client_1.ListingStatus.SOLD };
 });
@@ -225,6 +225,24 @@ function documentTypes(index) {
     ];
     return sets[index % sets.length];
 }
+function saleRecordData(listing, index) {
+    const buyer = buyers[index % buyers.length];
+    const saleMultipliers = [0.93, 0.97, 1.0, 1.04, 0.95, 1.08, 0.99, 1.02, 0.91, 1.06];
+    const paymentMethods = ['Bank transfer', 'Mobile money', 'Escrow transfer', 'Cash deposit'];
+    const saleDateOffsets = [330, 286, 247, 211, 174, 139, 103, 72, 39, 16, 9, 4];
+    const salePrice = Math.round(Number(listing.price) * saleMultipliers[index % saleMultipliers.length]);
+    return {
+        salePrice: `${salePrice}.00`,
+        saleDate: daysAgo(saleDateOffsets[index % saleDateOffsets.length]),
+        paymentMethod: paymentMethods[index % paymentMethods.length],
+        documentReference: `ACX-DEMO-${String(index + 1).padStart(4, '0')}`,
+        buyerName: buyer.name,
+        buyerPhone: buyer.phone,
+        buyerEmail: buyer.email,
+        reportS3Key: `sale-reports/demo/${index + 1}.pdf`,
+        createdAt: daysAgo(Math.max(saleDateOffsets[index % saleDateOffsets.length] - 1, 0)),
+    };
+}
 async function main() {
     requireDevDatabase();
     await resetDatabase();
@@ -287,14 +305,20 @@ async function main() {
                         reviewedBy: reviewed ? adminUser.id : null,
                     })),
                 },
+                saleRecord: seed.status === client_1.ListingStatus.SOLD
+                    ? {
+                        create: saleRecordData(seed, index),
+                    }
+                    : undefined,
             },
         });
     }
-    const [userCount, listingCount, imageCount, documentCount, statusCounts] = await Promise.all([
+    const [userCount, listingCount, imageCount, documentCount, saleRecordCount, statusCounts] = await Promise.all([
         prisma.user.count(),
         prisma.listing.count(),
         prisma.listingImage.count(),
         prisma.listingDocument.count(),
+        prisma.saleRecord.count(),
         prisma.listing.groupBy({ by: ['status'], _count: true, orderBy: { status: 'asc' } }),
     ]);
     console.log('AcreX demo seed complete.');
@@ -305,6 +329,7 @@ async function main() {
     }
     console.log(`Images: ${imageCount}`);
     console.log(`Documents: ${documentCount}`);
+    console.log(`Sale records: ${saleRecordCount}`);
     console.log('\nDemo logins (password for all: Password123!)');
     console.log('  Admin:  admin@acrex.so');
     console.log('  Seller: amina.hassan@example.com');

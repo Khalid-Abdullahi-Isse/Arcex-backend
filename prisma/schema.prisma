@@ -61,11 +61,36 @@ model Listing {
   seller        User              @relation("SellerListings", fields: [sellerId], references: [id], onDelete: Cascade)
   images        ListingImage[]
   documents     ListingDocument[]
+  saleRecord    SaleRecord?
 
   @@index([region])
   @@index([status])
   @@index([price])
   @@index([sizeSqm])
+}
+
+model SaleRecord {
+  id                String   @id @default(uuid()) @db.Uuid
+  listingId         String   @unique @map("listing_id") @db.Uuid
+  listing           Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  salePrice         Decimal  @map("sale_price") @db.Decimal(14, 2)
+  saleDate          DateTime @map("sale_date")
+  paymentMethod     String   @map("payment_method")
+
+  documentReference String?  @map("document_reference")
+
+  buyerName         String   @map("buyer_name")
+  buyerPhone        String   @map("buyer_phone")
+  buyerEmail        String?  @map("buyer_email")
+
+  reportS3Key       String?  @map("report_s3_key")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([saleDate])
+  @@map("sale_records")
 }
 
 model ListingImage {

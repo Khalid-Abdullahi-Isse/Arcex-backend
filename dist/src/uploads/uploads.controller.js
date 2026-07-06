@@ -19,24 +19,14 @@ const promises_1 = require("fs/promises");
 const path_1 = require("path");
 const public_decorator_1 = require("../auth/decorators/public.decorator");
 const local_upload_url_1 = require("./local-upload-url");
-const UPLOAD_ROOT = (0, path_1.join)(process.cwd(), 'uploads');
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 let UploadsController = class UploadsController {
     async upload(token, request, response) {
         const key = this.decodeSafeKey(token);
-        const chunks = [];
-        let totalBytes = 0;
-        for await (const chunk of request) {
-            const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-            totalBytes += buffer.length;
-            if (totalBytes > MAX_UPLOAD_BYTES) {
-                throw new common_1.BadRequestException('File exceeds the 10MB upload limit');
-            }
-            chunks.push(buffer);
-        }
+        const body = await this.readRequestBody(request);
         const filePath = this.resolveUploadPath(key);
         await (0, promises_1.mkdir)((0, path_1.dirname)(filePath), { recursive: true });
-        await (0, promises_1.writeFile)(filePath, Buffer.concat(chunks));
+        await (0, promises_1.writeFile)(filePath, body);
         response.status(204).send();
     }
     download(token, response) {
@@ -50,17 +40,36 @@ let UploadsController = class UploadsController {
     }
     decodeSafeKey(token) {
         const key = (0, local_upload_url_1.decodeLocalUploadToken)(token);
-        if (!key.startsWith('listings/') || key.includes('..')) {
+        if (!(0, local_upload_url_1.isAllowedLocalObjectKey)(key)) {
             throw new common_1.BadRequestException('Invalid upload token');
         }
         return key;
     }
     resolveUploadPath(key) {
-        const filePath = (0, path_1.normalize)((0, path_1.join)(UPLOAD_ROOT, key));
-        if (!filePath.startsWith(UPLOAD_ROOT)) {
+        try {
+            return (0, local_upload_url_1.resolveLocalObjectPath)(key);
+        }
+        catch {
             throw new common_1.BadRequestException('Invalid upload path');
         }
-        return filePath;
+    }
+    readRequestBody(request) {
+        return new Promise((resolve, reject) => {
+            const chunks = [];
+            let totalBytes = 0;
+            request.on('data', (chunk) => {
+                const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+                totalBytes += buffer.length;
+                if (totalBytes > MAX_UPLOAD_BYTES) {
+                    reject(new common_1.BadRequestException('File exceeds the 10MB upload limit'));
+                    request.destroy();
+                    return;
+                }
+                chunks.push(buffer);
+            });
+            request.on('end', () => resolve(Buffer.concat(chunks)));
+            request.on('error', reject);
+        });
     }
 };
 exports.UploadsController = UploadsController;

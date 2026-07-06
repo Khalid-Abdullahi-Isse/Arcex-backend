@@ -12,6 +12,7 @@ const core_1 = require("@nestjs/core");
 const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const admin_module_1 = require("./admin/admin.module");
+const analytics_module_1 = require("./analytics/analytics.module");
 const auth_module_1 = require("./auth/auth.module");
 const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
 const env_validation_1 = require("./config/env.validation");
@@ -19,7 +20,9 @@ const documents_module_1 = require("./documents/documents.module");
 const images_module_1 = require("./images/images.module");
 const listings_module_1 = require("./listings/listings.module");
 const notifications_module_1 = require("./notifications/notifications.module");
+const pdf_module_1 = require("./pdf/pdf.module");
 const prisma_module_1 = require("./prisma/prisma.module");
+const sale_records_module_1 = require("./sale-records/sale-records.module");
 const users_module_1 = require("./users/users.module");
 const uploads_module_1 = require("./uploads/uploads.module");
 const health_controller_1 = require("./health.controller");
@@ -49,7 +52,10 @@ exports.AppModule = AppModule = __decorate([
             images_module_1.ImagesModule,
             documents_module_1.DocumentsModule,
             uploads_module_1.UploadsModule,
+            pdf_module_1.PdfModule,
+            sale_records_module_1.SaleRecordsModule,
             admin_module_1.AdminModule,
+            analytics_module_1.AnalyticsModule,
             notifications_module_1.NotificationsModule,
         ],
         providers: [

@@ -3,27 +3,27 @@ import { ReviewListingDto } from './dto/review-listing.dto';
 export declare class AdminService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    pendingListings(): import("@prisma/client").Prisma.PrismaPromise<({
+    pendingListings(): import(".prisma/client").Prisma.PrismaPromise<({
         seller: {
+            name: string;
             id: string;
             region: string | null;
             createdAt: Date;
             phone: string;
             email: string;
-            name: string;
-            role: import("@prisma/client").$Enums.UserRole;
+            role: import(".prisma/client").$Enums.UserRole;
             isPhoneVerified: boolean;
         };
         images: {
             id: string;
-            order: number;
             listingId: string;
             url: string;
+            order: number;
         }[];
         documents: {
             id: string;
             listingId: string;
-            type: import("@prisma/client").$Enums.ListingDocumentType;
+            type: import(".prisma/client").$Enums.ListingDocumentType;
             fileUrl: string;
             reviewedAt: Date | null;
             reviewedBy: string | null;
@@ -40,11 +40,11 @@ export declare class AdminService {
         currency: string;
         latitude: number | null;
         longitude: number | null;
-        status: import("@prisma/client").$Enums.ListingStatus;
+        status: import(".prisma/client").$Enums.ListingStatus;
         rejectionNote: string | null;
         createdAt: Date;
     })[]>;
-    approveListing(id: string): import("@prisma/client").Prisma.Prisma__ListingClient<{
+    approveListing(id: string): import(".prisma/client").Prisma.Prisma__ListingClient<{
         id: string;
         sellerId: string;
         title: string;
@@ -56,11 +56,11 @@ export declare class AdminService {
         currency: string;
         latitude: number | null;
         longitude: number | null;
-        status: import("@prisma/client").$Enums.ListingStatus;
+        status: import(".prisma/client").$Enums.ListingStatus;
         rejectionNote: string | null;
         createdAt: Date;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    rejectListing(id: string, dto: ReviewListingDto): import("@prisma/client").Prisma.Prisma__ListingClient<{
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    rejectListing(id: string, dto: ReviewListingDto): import(".prisma/client").Prisma.Prisma__ListingClient<{
         id: string;
         sellerId: string;
         title: string;
@@ -72,20 +72,20 @@ export declare class AdminService {
         currency: string;
         latitude: number | null;
         longitude: number | null;
-        status: import("@prisma/client").$Enums.ListingStatus;
+        status: import(".prisma/client").$Enums.ListingStatus;
         rejectionNote: string | null;
         createdAt: Date;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
-    pendingDocuments(): import("@prisma/client").Prisma.PrismaPromise<({
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    pendingDocuments(): import(".prisma/client").Prisma.PrismaPromise<({
         listing: {
             seller: {
+                name: string;
                 id: string;
                 region: string | null;
                 createdAt: Date;
                 phone: string;
                 email: string;
-                name: string;
-                role: import("@prisma/client").$Enums.UserRole;
+                role: import(".prisma/client").$Enums.UserRole;
                 isPhoneVerified: boolean;
             };
         } & {
@@ -100,14 +100,14 @@ export declare class AdminService {
             currency: string;
             latitude: number | null;
             longitude: number | null;
-            status: import("@prisma/client").$Enums.ListingStatus;
+            status: import(".prisma/client").$Enums.ListingStatus;
             rejectionNote: string | null;
             createdAt: Date;
         };
     } & {
         id: string;
         listingId: string;
-        type: import("@prisma/client").$Enums.ListingDocumentType;
+        type: import(".prisma/client").$Enums.ListingDocumentType;
         fileUrl: string;
         reviewedAt: Date | null;
         reviewedBy: string | null;

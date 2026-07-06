@@ -14,18 +14,18 @@ export declare class DocumentsService {
     addDocument(userId: string, listingId: string, dto: AddListingDocumentDto): Promise<{
         id: string;
         listingId: string;
-        type: import("@prisma/client").$Enums.ListingDocumentType;
+        type: import(".prisma/client").$Enums.ListingDocumentType;
         fileUrl: string;
         reviewedAt: Date | null;
         reviewedBy: string | null;
     }>;
-    review(documentId: string, reviewedBy: string, dto: ReviewDocumentDto): import("@prisma/client").Prisma.Prisma__ListingDocumentClient<{
+    review(documentId: string, reviewedBy: string, dto: ReviewDocumentDto): import(".prisma/client").Prisma.Prisma__ListingDocumentClient<{
         id: string;
         listingId: string;
-        type: import("@prisma/client").$Enums.ListingDocumentType;
+        type: import(".prisma/client").$Enums.ListingDocumentType;
         fileUrl: string;
         reviewedAt: Date | null;
         reviewedBy: string | null;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     private assertSellerOwnsListing;
 }
